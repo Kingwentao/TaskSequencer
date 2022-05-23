@@ -32,7 +32,7 @@ class TaskDispatcher {
 
     private fun dispatchTask() {
         for(task in mTasks){
-            val isIOBoundType = task.taskType() == TaskType.IO_BOUND
+            val isIOBoundType = task.taskType == TaskType.IO_BOUND
             TaskExecutor.instance.getExecutor(isIOBoundType).execute(TaskRunnable(task))
         }
     }

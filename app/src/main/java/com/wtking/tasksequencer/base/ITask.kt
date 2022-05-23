@@ -9,7 +9,10 @@ import com.wtking.tasksequencer.bean.TaskType
  */
 interface ITask {
 
-    fun taskType(): TaskType
+    /**
+     * 任务的类型
+     */
+    val taskType: TaskType
 
     /**
      * 任务优先级
@@ -17,7 +20,7 @@ interface ITask {
     fun priority(): Int
 
     /**
-     * 执行任务
+     * 执行的任务
      */
     fun run()
 
