@@ -10,19 +10,19 @@ import com.wtking.tasksequencer.bean.TaskType
  * created on: 2022/5/23
  * description:
  */
-class AppStartTaskOne : ITask, BaseTask() {
+class AppStartTaskFour : ITask, BaseTask() {
 
     companion object{
-        private const val TAG = "AppStartTaskOne"
+        private const val TAG = "AppStartTaskFour"
     }
 
     override val dependOnTask: List<Class<out ITask>>
-        get() = mutableListOf(AppStartTaskTwo::class.java)
+        get() = mutableListOf(AppStartTaskOne::class.java)
 
     override fun run() {
-        Log.d(TAG, "AppStartTaskOne run: start")
-        Thread.sleep(3000)
-        Log.d(TAG, "AppStartTaskOne run: end")
+        Log.d(TAG, "AppStartTaskFour run: start")
+        Thread.sleep(1000)
+        Log.d(TAG, "AppStartTaskFour run: end")
     }
 
 }

@@ -15,6 +15,11 @@ interface ITask {
     val taskType: TaskType
 
     /**
+     * 依赖的task
+     */
+    val dependOnTask: List<Class<out ITask>>
+
+    /**
      * 任务优先级
      */
     fun priority(): Int

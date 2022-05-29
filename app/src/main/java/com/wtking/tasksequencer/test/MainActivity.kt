@@ -11,6 +11,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mTaskDispatcher = TaskDispatcher.create()
             mTaskDispatcher.addTask(AppStartTaskOne())
+            mTaskDispatcher.addTask(AppStartTaskTwo())
+            mTaskDispatcher.addTask(AppStartTaskThree())
+            mTaskDispatcher.addTask(AppStartTaskFour())
             mTaskDispatcher.start()
         }
     }
