@@ -1,32 +1,32 @@
 package com.wtking.tasksequencer.sort
 
 import android.util.Log
-import com.wtking.tasksequencer.base.ITask
+import com.wtking.tasksequencer.base.BaseTask
 
 /**
  * author: created by wentaoKing
  * date: created in 2022/5/24
  * description: 任务的图结构
  */
-class TasksGraph{
+class TasksGraph {
 
-    val nodes: HashMap<Class<out ITask>, TaskNode> = HashMap()
+    val nodes: HashMap<Class<out BaseTask>, TaskNode> = HashMap()
 
     companion object {
 
         private const val TAG = "TasksGraph"
 
-        fun createTaskGraph(tasks: List<ITask>): TasksGraph {
+        fun createTaskGraph(tasks: List<BaseTask>): TasksGraph {
             val tasksGraph = TasksGraph()
             for (task in tasks) {
-                val fromTasks = task.dependOnTask
                 if (!tasksGraph.nodes.containsKey(task::class.java)) {
-                    tasksGraph.nodes[task::class.java] = TaskNode()
+                    tasksGraph.nodes[task::class.java] = TaskNode(task::class.java)
                 }
                 // 依赖的task
+                val fromTasks = task.dependOnTaskList
                 for (fromTask in fromTasks) {
                     if (!tasksGraph.nodes.containsKey(fromTask)) {
-                        tasksGraph.nodes[fromTask] = TaskNode()
+                        tasksGraph.nodes[fromTask] = TaskNode(fromTask)
                     }
                     val fromTaskNode = tasksGraph.nodes[fromTask] ?: continue
                     val toTaskNode = tasksGraph.nodes[task::class.java] ?: continue
@@ -58,9 +58,9 @@ class TasksGraph{
         }
 
         private fun getClassByTaskNode(
-            nodes: HashMap<Class<out ITask>, TaskNode>,
+            nodes: HashMap<Class<out BaseTask>, TaskNode>,
             taskNode: TaskNode
-        ): Class<out ITask>? {
+        ): Class<out BaseTask>? {
             for (node in nodes) {
                 if (node.value == taskNode) {
                     return node.key

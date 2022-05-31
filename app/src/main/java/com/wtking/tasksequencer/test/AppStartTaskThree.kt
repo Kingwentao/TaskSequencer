@@ -10,7 +10,7 @@ import com.wtking.tasksequencer.bean.TaskType
  * created on: 2022/5/23
  * description:
  */
-class AppStartTaskThree : ITask, BaseTask() {
+class AppStartTaskThree : BaseTask() {
 
     companion object {
         private const val TAG = "AppStartTaskThree"

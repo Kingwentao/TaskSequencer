@@ -15,9 +15,9 @@ interface ITask {
     val taskType: TaskType
 
     /**
-     * 依赖的task
+     * 所依赖的task
      */
-    val dependOnTask: List<Class<out ITask>>
+    val dependOnTaskList: List<Class<out ITask>>
 
     /**
      * 任务优先级
@@ -28,5 +28,10 @@ interface ITask {
      * 执行的任务
      */
     fun run()
+
+    /**
+     * 任务是否需要等待
+     */
+    fun needWait(): Boolean
 
 }

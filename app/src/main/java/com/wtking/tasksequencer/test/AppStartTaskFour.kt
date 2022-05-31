@@ -10,13 +10,13 @@ import com.wtking.tasksequencer.bean.TaskType
  * created on: 2022/5/23
  * description:
  */
-class AppStartTaskFour : ITask, BaseTask() {
+class AppStartTaskFour : BaseTask() {
 
-    companion object{
+    companion object {
         private const val TAG = "AppStartTaskFour"
     }
 
-    override val dependOnTask: List<Class<out ITask>>
+    override val dependOnTaskList: List<Class<out BaseTask>>
         get() = mutableListOf(AppStartTaskOne::class.java)
 
     override fun run() {
