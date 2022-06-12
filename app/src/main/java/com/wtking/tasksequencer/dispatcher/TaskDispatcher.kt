@@ -4,7 +4,7 @@ import android.util.Log
 import com.wtking.tasksequencer.base.BaseTask
 import com.wtking.tasksequencer.bean.TaskType
 import com.wtking.tasksequencer.executor.TaskExecutor
-import com.wtking.tasksequencer.sort.TopologicalSortTask
+import com.wtking.tasksequencer.sort.TopologicalSortTaskHelper
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -15,17 +15,17 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class TaskDispatcher {
 
-    private lateinit var mSortTask: TopologicalSortTask
+    // 所有任务
     private val mTasks = mutableListOf<BaseTask>()
 
-    private val mNeedWaitTaskCount = AtomicInteger()
-    private lateinit var mCountDownLatch: CountDownLatch
-
-    // 所有任务
+    // 任务名和任务类的映射关系
     private lateinit var mAllTaskMap: HashMap<Class<out BaseTask>, BaseTask>
 
-    // 依赖key的所有task
+    // 任务名和依赖任务名的映射关系
     private lateinit var mDependedTaskMap: HashMap<Class<out BaseTask>, List<Class<out BaseTask>>>
+
+    // 排序助手
+    private lateinit var mSortTaskHelper: TopologicalSortTaskHelper
 
     companion object {
         private const val TAG = "TaskDispatcher"
@@ -37,29 +37,22 @@ class TaskDispatcher {
 
     fun addTask(task: BaseTask): TaskDispatcher {
         mTasks.add(task)
-        if (task.needWait()) {
-            mNeedWaitTaskCount.getAndIncrement()
-        }
         return this
     }
 
     fun start() {
         // 拿到拓扑排序后的task
-        val sortTask = TopologicalSortTask()
-        val sortedTaskList = sortTask.getSortedTask(mTasks)
-        mSortTask = sortTask
-        mAllTaskMap = sortTask.getAllTaskMap()
-        mDependedTaskMap = sortTask.getTasksByNode()
-        mCountDownLatch = CountDownLatch(mNeedWaitTaskCount.get())
-        // 只能在主线程执行？
+        val sortTaskHelper = TopologicalSortTaskHelper()
+        val sortedTaskList = sortTaskHelper.getSortedTask(mTasks)
+        mSortTaskHelper = sortTaskHelper
+        mAllTaskMap = sortTaskHelper.getAllTaskMap()
+        mDependedTaskMap = sortTaskHelper.getTasksByNode()
         dispatchTask(sortedTaskList)
     }
 
     private fun dispatchTask(sortedTaskList: List<BaseTask>) {
         for (task in sortedTaskList) {
             Log.d(TAG, "dispatchTask sort $task")
-        }
-        for (task in sortedTaskList) {
             val isIOBoundType = task.taskType == TaskType.IO_BOUND
             TaskExecutor.instance.getExecutor(isIOBoundType).execute(TaskRunnable(task, this))
         }
@@ -70,15 +63,10 @@ class TaskDispatcher {
      */
     fun notifyDependedTasks(mTask: BaseTask) {
         Log.d(TAG, "notifyDependedTasks: $mTask is finish...")
-        if (mTask.needWait()) {
-            Log.d(TAG, "notifyDependedTasks: $mTask is need wait")
-            mCountDownLatch.countDown()
-            mNeedWaitTaskCount.getAndDecrement()
-        }
         val dependTasks = mDependedTaskMap[mTask::class.java]
         if (!dependTasks.isNullOrEmpty()) {
             for (task in dependTasks) {
-                mAllTaskMap[task]?.notifyWait()
+                mAllTaskMap[task]?.notifyEndWait()
             }
         }
     }

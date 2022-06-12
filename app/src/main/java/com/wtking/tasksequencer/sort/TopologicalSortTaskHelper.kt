@@ -8,9 +8,9 @@ import kotlin.collections.HashMap
 /**
  * author: WentaoKing
  * created on: 2022/5/23
- * description: 拓扑排序任务
+ * description: 任务拓扑排序助手
  */
-class TopologicalSortTask {
+class TopologicalSortTaskHelper {
 
     companion object {
         private const val TAG = "TopologicalSortTask"
@@ -37,7 +37,6 @@ class TopologicalSortTask {
                 Log.d(TAG, "getSortedTask: add $node")
             }
             tasksNodeInCount[node] = node.inCount
-
         }
         // 按照入度为0的顺序，进行排序
         val sortedList = arrayListOf<TaskNode>()

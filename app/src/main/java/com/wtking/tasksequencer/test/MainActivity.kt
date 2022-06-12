@@ -9,12 +9,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val mTaskDispatcher = TaskDispatcher.create()
-            mTaskDispatcher.addTask(AppStartTaskOne())
-            mTaskDispatcher.addTask(AppStartTaskTwo())
-            mTaskDispatcher.addTask(AppStartTaskThree())
-            mTaskDispatcher.addTask(AppStartTaskFour())
-            mTaskDispatcher.start()
-        }
+            TaskDispatcher.create()
+                .addTask(AppStartTaskOne())
+                .addTask(AppStartTaskTwo())
+                .addTask(AppStartTaskThree())
+                .addTask(AppStartTaskFour())
+                .start()
+            }
     }
 }

@@ -1,5 +1,6 @@
 package com.wtking.tasksequencer.base
 
+import android.os.Process
 import com.wtking.tasksequencer.bean.TaskType
 import java.util.concurrent.CountDownLatch
 
@@ -10,7 +11,7 @@ import java.util.concurrent.CountDownLatch
  */
 abstract class BaseTask : ITask {
 
-    private val mDepends = CountDownLatch(dependOnTaskList.size)
+    private val mDependCountDownLatch = CountDownLatch(dependOnTaskList.size)
 
     override val taskType: TaskType
         get() = TaskType.IO_BOUND
@@ -19,23 +20,19 @@ abstract class BaseTask : ITask {
         get() = mutableListOf()
 
     override fun priority(): Int {
-        return 10
-    }
-
-    override fun needWait(): Boolean {
-        return false
+        return Process.THREAD_PRIORITY_BACKGROUND
     }
 
     fun waitToNotify() {
         try {
-            mDepends.await()
+            mDependCountDownLatch.await()
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
     }
 
-    fun notifyWait() {
-        mDepends.countDown()
+    fun notifyEndWait() {
+        mDependCountDownLatch.countDown()
     }
 
 }

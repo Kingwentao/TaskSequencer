@@ -19,11 +19,11 @@ class TaskExecutor private constructor() {
         // cpu个数
         private val CPU_COUNT = Runtime.getRuntime().availableProcessors()
 
-        // 核心线程池大小
+        // 核心线程数
         private val CORE_POOL_SIZE =
             2.coerceAtLeast((CPU_COUNT - 1).coerceAtMost(5))
 
-        // 最大线程池大小
+        // 最大线程数
         private val MAXIMUM_POOL_SIZE = CORE_POOL_SIZE
 
         private const val KEEP_ALIVE_MILLISECONDS = 1000L

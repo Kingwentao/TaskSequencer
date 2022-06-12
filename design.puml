@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/class-diagram
+' https://blog.csdn.net/vitaviva/article/details/120639074
+
+title
+TaskSequencer Class Graph
+end title
+
+interface ITask{
+  taskType: TaskType
+  dependOnTaskList: List<Class<out ITask>>
+  run()
+}
+
+abstract class BaseTask{
+  dependOnTaskList: List<Class>
+  taskType: TaskType
+  waitToNotify()
+  notifyEndWait()
+}
+
+ITask <|.. BaseTask
+TaskType <.. ITask
+
+class TaskDispatcher{
+  mTasks: ListOf<BaseTask>
+  addTask(task: BaseTask)
+  start()
+}
+
+class TopologicalSortTaskHelper{
+  getSortedTask(tasks: List<BaseTask>)
+}
+
+class TaskExecutor{
+  instance: TaskExecutor
+  getExecutor(isIOBoundType: Boolean)
+}
+
+TaskRunnable <.. TaskDispatcher
+TopologicalSortTaskHelper <.. TaskDispatcher
+TaskExecutor <.. TaskDispatcher
+BaseTask <.. TaskDispatcher
+
+enum TaskType {
+CPU_BOUND
+IO_BOUND
+}
+
+class TaskRunnable {
+  mTask: BaseTask
+  override run()
+}
+
+@enduml
